@@ -147,32 +147,6 @@
 				"run_after": [
 					"Build"
 				],
-				"job_steps": [
-					{
-						"name": "Add Firewall Rule",
-						"definition": "Add Firewall Rule",
-						"command": "Import-Module NetSecurity\nNew-NetFirewallRule -Name netdemoport -DisplayName \"netdemo server port\" -Direction Inbound -Protocol TCP -LocalPort \"$env:DEMOSERVER_PORT\" -Action Allow",
-						"properties": null
-					},
-					{
-						"name": "Integration Tests",
-						"definition": "Integration Tests",
-						"command": ".\\ci\\integration-test.ps1",
-						"properties": null
-					},
-					{
-						"name": "jmeter",
-						"definition": "jmeter",
-						"command": "$ipa = (Get-NetIPConfiguration | Where-Object {$_.IPv4DefaultGateway -ne $null -and $_.NetAdapter.Status -ne \"Disconnected\"}).IPv4Address.IPAddress\n$env:Path += \";$env:PKG_BASE_DIR/jdk/openjdk/bin;$env:PKG_BASE_DIR/jmeter/bin\"\n$port = $env:DEMOSERVER_PORT\njmeter -Jip=\"$ipa\" -Jport=\"$port\" -n -t ci/pt.jmx -l $env:TEST_LOGS_DIR/results.jtl\n.\\ci\\validatept.ps1",
-						"properties": null
-					},
-					{
-						"name": "Server Machine",
-						"definition": "Server Machine",
-						"command": "Write-Host \"Server: $env:APPLICATION_NAME-$env:APPLICATION_BRANCH-$env:APPLICATION_SHORTSHA.server.consul\"",
-						"properties": null
-					}
-				],
 				"exit_actions": {
 					"default": {
 						"fetch_logs": true,
@@ -337,11 +311,6 @@
 								]
 							},
 							{
-								"name": "jmeter",
-								"release": "jmeter",
-								"properties": []
-							},
-							{
 								"name": "enable_ssh",
 								"release": "windows-utilities",
 								"properties": []
@@ -352,6 +321,37 @@
 				"post_deployment_actions": {
 					"loadbalancer": {}
 				},
+				"tasks": [
+					{
+						"name": "netdemo-server",
+						"steps": [
+							{
+								"name": "Add Firewall Rule",
+								"definition": "Add Firewall Rule",
+								"command": "Import-Module NetSecurity\nNew-NetFirewallRule -Name netdemoport -DisplayName \"netdemo server port\" -Direction Inbound -Protocol TCP -LocalPort \"$env:DEMOSERVER_PORT\" -Action Allow",
+								"properties": null
+							},
+							{
+								"name": "Integration Tests",
+								"definition": "Integration Tests",
+								"command": "#.\\ci\\integration-test.ps1",
+								"properties": null
+							},
+							{
+								"name": "jmeter",
+								"definition": "jmeter",
+								"command": "$ipa = (Get-NetIPConfiguration | Where-Object {$_.IPv4DefaultGateway -ne $null -and $_.NetAdapter.Status -ne \"Disconnected\"}).IPv4Address.IPAddress\n$env:Path += \";$env:PKG_BASE_DIR/jdk/openjdk/bin;$env:PKG_BASE_DIR/jmeter/bin\"\n$port = $env:DEMOSERVER_PORT\njmeter -Jip=\"$ipa\" -Jport=\"$port\" -n -t ci/pt.jmx -l $env:TEST_LOGS_DIR/results.jtl\n#.\\ci\\validatept.ps1",
+								"properties": null
+							},
+							{
+								"name": "Server Machine",
+								"definition": "Server Machine",
+								"command": "Write-Host \"Server: $env:APPLICATION_NAME-$env:APPLICATION_BRANCH-$env:APPLICATION_SHORTSHA.server.consul\"",
+								"properties": null
+							}
+						]
+					}
+				],
 				"deployment_target": 1,
 				"releases": [
 					{
@@ -360,10 +360,6 @@
 					},
 					{
 						"name": "consul-windows",
-						"version": "latest"
-					},
-					{
-						"name": "jmeter",
 						"version": "latest"
 					},
 					{
@@ -378,20 +374,6 @@
 				"persistent": true,
 				"run_after": [
 					"Integration"
-				],
-				"job_steps": [
-					{
-						"name": "Add Firewall Rule",
-						"definition": "Add Firewall Rule",
-						"command": "Import-Module NetSecurity\nNew-NetFirewallRule -Name netdemoport -DisplayName \"netdemo server port\" -Direction Inbound -Protocol TCP -LocalPort \"$env:DEMOSERVER_PORT\" -Action Allow",
-						"properties": null
-					},
-					{
-						"name": "jmeter",
-						"definition": "jmeter",
-						"command": "$ipa = \"netdemo-server.service.consul\"\n$env:Path += \";$env:PKG_BASE_DIR/jdk/openjdk/bin;$env:PKG_BASE_DIR/jmeter/bin\"\n$port = $env:DEMOSERVER_PORT\njmeter -Jip=\"$ipa\" -Jport=\"$port\" -n -t ci/pt.jmx -l $env:TEST_LOGS_DIR/results.jtl\n.\\ci\\validatept.ps1",
-						"properties": null
-					}
 				],
 				"exit_actions": {
 					"default": {
@@ -537,11 +519,6 @@
 										"value": "false"
 									}
 								]
-							},
-							{
-								"name": "jmeter",
-								"release": "jmeter",
-								"properties": []
 							}
 						]
 					}
@@ -549,6 +526,25 @@
 				"post_deployment_actions": {
 					"loadbalancer": {}
 				},
+				"tasks": [
+					{
+						"name": "netdemo-server",
+						"steps": [
+							{
+								"name": "Add Firewall Rule",
+								"definition": "Add Firewall Rule",
+								"command": "Import-Module NetSecurity\nNew-NetFirewallRule -Name netdemoport -DisplayName \"netdemo server port\" -Direction Inbound -Protocol TCP -LocalPort \"$env:DEMOSERVER_PORT\" -Action Allow",
+								"properties": null
+							},
+							{
+								"name": "jmeter",
+								"definition": "jmeter",
+								"command": "$ipa = \"netdemo-server.service.consul\"\n$env:Path += \";$env:PKG_BASE_DIR/jdk/openjdk/bin;$env:PKG_BASE_DIR/jmeter/bin\"\n$port = $env:DEMOSERVER_PORT\njmeter -Jip=\"$ipa\" -Jport=\"$port\" -n -t ci/pt.jmx -l $env:TEST_LOGS_DIR/results.jtl\n.\\ci\\validatept.ps1",
+								"properties": null
+							}
+						]
+					}
+				],
 				"deployment_target": 1,
 				"releases": [
 					{
@@ -557,10 +553,6 @@
 					},
 					{
 						"name": "consul-windows",
-						"version": "latest"
-					},
-					{
-						"name": "jmeter",
 						"version": "latest"
 					}
 				]
