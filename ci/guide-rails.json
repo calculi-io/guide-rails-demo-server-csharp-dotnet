@@ -314,6 +314,11 @@
 								"name": "enable_ssh",
 								"release": "windows-utilities",
 								"properties": []
+							},
+							{
+								"name": "jmeter",
+								"release": "jmeter",
+								"properties": []
 							}
 						]
 					}
@@ -364,6 +369,10 @@
 					},
 					{
 						"name": "windows-utilities",
+						"version": "latest"
+					},
+					{
+						"name": "jmeter",
 						"version": "latest"
 					}
 				]
@@ -519,6 +528,11 @@
 										"value": "false"
 									}
 								]
+							},
+							{
+								"name": "jmeter",
+								"release": "jmeter",
+								"properties": []
 							}
 						]
 					}
@@ -539,7 +553,7 @@
 							{
 								"name": "jmeter",
 								"definition": "jmeter",
-								"command": "$ipa = \"netdemo-server.service.consul\"\n$env:Path += \";$env:PKG_BASE_DIR/jdk/openjdk/bin;$env:PKG_BASE_DIR/jmeter/bin\"\n$port = $env:DEMOSERVER_PORT\njmeter -Jip=\"$ipa\" -Jport=\"$port\" -n -t ci/pt.jmx -l $env:TEST_LOGS_DIR/results.jtl\n.\\ci\\validatept.ps1",
+								"command": "$ipa = \"netdemo-server.service.consul\"\n$env:Path += \";$env:PKG_BASE_DIR/jdk/openjdk/bin;$env:PKG_BASE_DIR/jmeter/bin\"\n$port = $env:DEMOSERVER_PORT\njmeter -Jip=\"$ipa\" -Jport=\"$port\" -n -t ci/pt.jmx -l $env:TEST_LOGS_DIR/results.jtl\n#.\\ci\\validatept.ps1",
 								"properties": null
 							}
 						]
@@ -553,6 +567,10 @@
 					},
 					{
 						"name": "consul-windows",
+						"version": "latest"
+					},
+					{
+						"name": "jmeter",
 						"version": "latest"
 					}
 				]
